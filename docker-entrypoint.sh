@@ -31,4 +31,22 @@ if [ "$socketMissing" = 1 -a "$1" = forego -a "$2" = start -a "$3" = '-r' ]; the
 	exit 1
 fi
 
+cat <<EOT > /etc/dnsmasq.conf
+domain-needed
+bogus-priv
+no-hosts
+no-daemon
+no-resolv
+expand-hosts
+log-queries
+
+address=/.$DEV_DOMAIN/127.0.0.1
+address=/.test/127.0.0.1
+address=/.example/127.0.0.1
+address=/.invalid/127.0.0.1
+address=/.localhost/127.0.0.1
+EOT
+
+dnsmasq --no-daemon &
+
 exec "$@"
